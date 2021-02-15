@@ -73,7 +73,8 @@ let
   bundled-emacs-init = ./init.el;
 
   extra-emacs-args =
-    [ "--load=${bundled-emacs-init}"
+    [ "--no-init-file"
+      "--load=${bundled-emacs-init}"
       "-fn" "Terminus"
       "-bg" "'#002b36'"
       "-fg" "'#839496'"

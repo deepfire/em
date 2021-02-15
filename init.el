@@ -41,7 +41,7 @@
 
   (defun dante-set-full (x)
     (interactive "Mcabal target: ")
-    (setf dante-repl-command-line `("cabal" "repl" ,x "-O0" "-j" "--builddir=dist/dante")))
+    (setf dante-repl-command-line `("cabal" "repl" ,x "-O0" "-j" "--builddir=.dante")))
 
   (defun dante-set-lib (x)
     (interactive "Mcabal lib target: ")
@@ -533,7 +533,17 @@
  '(magit-tag ((t (:background "LemonChiffon1" :foreground "goldenrod4" :height 0.75))))
  '(variable-pitch ((t (:family "Aurulent Sans")))))
 
-(message " --- End of .emacs ---")
+(defun try-load-native-emacs-init-files (&rest init-files)
+  (let* ((home           (getenv "HOME"))
+         (init-filepaths (mapcar (lambda (x) (concat home "/" x)) init-files))
+         (avails         (remove-if-not 'file-exists-p init-filepaths)))
+    (cond ((not (null avails))
+           (message "Found native init file, loading: %s" (first avails))
+           (load (first avails)))
+          (t
+           (message "No native init files found.")))))
+
+(other-window 1)
 
 (setq
  initial-scratch-message
@@ -584,5 +594,10 @@
 ;;    - C-up                Join current line to the previous one.
 ;;    - C-x a r             Align by regexp.
 ;;
-"
- )
+")
+
+(message " --- End of em-bundled init.el ---")
+
+(try-load-native-emacs-init-files
+ "init.el"
+ ".emacs")
