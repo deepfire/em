@@ -1,53 +1,50 @@
 * What
 
-  =em= is a somewhat minimal, somewhat practical, somewhat sensible Emacs bundle.
+  =em= is a somewhat minimal, somewhat practical, somewhat sensible, Nix-packaged Emacs bundle.
 
   It is mainly intended for Haskell development.
 
-* How
+* Installation
+
+  Nix is a prerequisite.
 
   : ./install.sh
 
+  Once done, the =em= shell wrapper is available in the user environment.
+
 * Quick summary of non-default keybindings:
 
-  0. Window navigation & management:
+*** Window navigation & management
+    - =S-<arrows>= ::         Directional navigation (=windmove-left= / =right= / =up= / =down=)
+    - =C-Tab= ::              Cycle (=other-window=)
+    - =C-c C-<left/right>= :: undo/redo _any_ window layout changes (=winner-undo= / =redo=)
 
-    - S-<arrows>          Directional navigation (windmove-left/right/up/down)
-    - C-Tab               Cycle (other-window)
-    - C-c C-<left/right>  undo/redo _any_ window layout changes (winner-undo/redo)
+*** Buffer navigation
+    - =M-SPC= ::              Quick list of same-type buffers (=bs-show=)
+    - =S-M-SPC= ::            Full list of buffers (=ibuffer=)
 
-  1. Buffer navigation:
+*** File/repo
+    - =`= ::                  Quick navigate in repo files (=helm-ls-git-ls=)
+    - =<menu>= ::             Everything git (=magit-status=)
+    - =C-c m= ::              Rename current file and buffer (=rename-this-buffer-and-file=)
+    - =C-<pgup>= / =<pgdown>= :: Left sidebar: move to prev/next (=neotree-tab-move=)
 
-    - M-SPC               Quick list of same-type buffers (bs-show)
-    - S-M-SPC             Full list of buffers (ibuffer)
+*** Search (incremental, via Helm)
+    - =M-s= ::                Grep in root of current git repo (=helm-grepint-grep-root=)
+    - =C-<super>-s= ::        Hoogle inside the current Nix shell (=helm-hoogle-at-point=)
+    - =<f1>= ::               Interactive Emacs command/function/variable 'apropos' (=helm-apropos=)
+    - =C-x C-z= ::            Recall results of ANY last Helm search (=helm-resume=)
 
-  2. File/repo:
+*** Haskell
+    - =<f4>= ::               Set a Cabal lib target for Dante (=dante-set-lib=)
+    - open any =.hs= file ::  Dante is started, but will fail, unless you set
+                              the Cabal target _before_ doing this.
+                              It's also beneficial to prebuild the target in CLI
+                              beforehand.
+*** In Haskell buffers
+    - =M-p= / =M-n= ::        Navigate between error messages
 
-    - `                   Quick navigate in repo files (helm-ls-git-ls)
-    - <menu>              Everything git (magit-status)
-    - C-c m               Rename current file and buffer (rename-this-buffer-and-file)
-    - C-<pgup>/<pgdown>   Left sidebar: move to prev/next (neotree-tab-move)
-
-  3. Search (incremental, via Helm):
-
-    - M-s                 Grep in root of current git repo (helm-grepint-grep-root)
-    - C-<super>-s         Hoogle inside the current Nix shell (helm-hoogle-at-point)
-    - <f1>                Interactive Emacs command/function/variable 'apropos'.
-    - C-x C-z             Recall results of ANY last Helm search (helm-resume)
-
-  4. Haskell:
-
-    - <f4>                Set a Cabal lib target for Dante.
-    - open any .hs file   Dante is started, but will fail, unless you set
-                            a proper component for it (dante-set-lib/exe) _before_.
-    - <f5>                Restart Dante.
-
-  5. In Haskell buffers:
-
-    - M-p/M-n             Navigate between error messages.
-
-  6. Random stuff:
-
-    - <f10>               Insert current date.
-    - C-up                Join current line to the previous one.
-    - C-x a r             Align by regexp.
+*** Random stuff
+    - =<f10>= ::              Insert current date
+    - =C-up= ::               Join current line to the previous one
+    - =C-x a r= ::            Align by regexp
