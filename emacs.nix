@@ -84,7 +84,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2021.0215";
+  version = "2021.0215.1";
   name = "em-${version}";
 
   src = ./.;
@@ -101,9 +101,19 @@ stdenv.mkDerivation rec {
   installPhase =
   ''
     mkdir -p $out/bin
+
     makeWrapper ${emacs}/bin/emacs $out/bin/em \
       --run "echo '${name}: nixpkgs commit ${nixpkgs.rev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
       --add-flags "${toString extra-emacs-args}"
+
+    cat >$out/bin/emn <<EOF
+    echo '${name}: nixpkgs commit ${nixpkgs.rev}'
+    echo '${name}: loading bundled init.el: ${bundled-emacs-init}'
+    nohup $out/bin/em "\$@" </dev/null 2>/dev/null &
+    sleep 0.1
+    rm -f nohup.out
+    EOF
+    chmod +x $out/bin/emn
   '';
 }

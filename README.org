@@ -10,7 +10,9 @@
 
   : ./install.sh
 
-  Once done, the =em= shell wrapper is available in the user environment.
+  Once done, =em=, a basic shell wrapper around =emacs= is available in the user environment.
+
+  =emn= is a non-blocking variant of =em= (convenience for =nix-shell= usage).
 
 * Quick summary of non-default keybindings:
 
