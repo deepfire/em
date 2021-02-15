@@ -41,7 +41,7 @@
 
   (defun dante-set-full (x)
     (interactive "Mcabal target: ")
-    (setf dante-repl-command-line `("cabal" "repl" ,x "-O0" "-j" "--builddir=.dante")))
+    (setf dante-repl-command-line `("cabal" "repl" ,x "-O0" "-j" "--builddir=dist-newstyle/dante")))
 
   (defun dante-set-lib (x)
     (interactive "Mcabal lib target: ")
@@ -52,7 +52,7 @@
     (dante-set-full (concat "exe:" x)))
 
   (setq dante-repl-command-line
-        '("cabal" "repl" "-O0" "-j" "--builddir=.dante")
+        '("cabal" "repl" "-O0" "-j" "--builddir=dist-newstyle/dante")
         dante-load-flags
         (quote
          ("+c" "-Wall" "-ferror-spans" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret"))
@@ -63,7 +63,7 @@
                               (or dante-target
                                   (dante-package-name)
                                   nil)
-                              "--builddir=.dante"))))))
+                              "--builddir=dist-newstyle/dante"))))))
 
 (use-package dired
     :config
