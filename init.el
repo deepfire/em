@@ -263,14 +263,14 @@
     (string= " *NeoTree*" (buffer-name (window-buffer win))))
 
   (defun maybe-select-neotree-window-p ()
-    (cl-flet ((rec (init cur n)
-                   (cond ((neotree-window-p cur)
-                          (select-window cur)
-                          t)
-                         ((eq init cur)
-                          nil)
-                         (t
-                          (rec init (next-window cur) (+ n 1))))))
+    (cl-labels ((rec (init cur n)
+                     (cond ((neotree-window-p cur)
+                            (select-window cur)
+                            t)
+                           ((eq init cur)
+                            nil)
+                           (t
+                            (rec init (next-window cur) (+ n 1))))))
       (rec (selected-window) (next-window (selected-window)) 0)))
 
   (defun neotree-tab-move (forward-p)
