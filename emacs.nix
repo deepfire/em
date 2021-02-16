@@ -10,16 +10,15 @@ $ nix-build emacs.nix
 
 */
 
-let
-  sources = import ./nix/sources.nix { inherit pkgs; };
-  nixpkgs = sources.nixpkgs;
-  pkgs    = import nixpkgs {};
-in
-
-{}:
+{ use-host-nixpkgs ? false
+}:
 
 let
-  fromGithub = old: owner: repo: rev: sha256:
+  sources     = import ./nix/sources.nix { inherit pkgs; };
+  nixpkgs     = if !use-host-nixpkgs then sources.nixpkgs     else <nixpkgs>;
+  nixpkgs-rev = if !use-host-nixpkgs then sources.nixpkgs.rev else "HOST";
+  pkgs        = import nixpkgs {};
+  fromGithub  = old: owner: repo: rev: sha256:
     (old.override (args:
       { melpaBuild = drv: args.melpaBuild (drv // {
           src = pkgs.fetchFromGitHub { inherit owner repo rev sha256; }; });}));
@@ -84,7 +83,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2021.0215.1";
+  version = "2021.0216";
   name = "em-${version}";
 
   src = ./.;
@@ -103,12 +102,12 @@ stdenv.mkDerivation rec {
     mkdir -p $out/bin
 
     makeWrapper ${emacs}/bin/emacs $out/bin/em \
-      --run "echo '${name}: nixpkgs commit ${nixpkgs.rev}'" \
+      --run "echo '${name}: nixpkgs commit ${nixpkgs-rev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
       --add-flags "${toString extra-emacs-args}"
 
     cat >$out/bin/emn <<EOF
-    echo '${name}: nixpkgs commit ${nixpkgs.rev}'
+    echo '${name}: nixpkgs commit ${nixpkgs-rev}'
     echo '${name}: loading bundled init.el: ${bundled-emacs-init}'
     nohup $out/bin/em "\$@" </dev/null 2>/dev/null &
     sleep 0.1

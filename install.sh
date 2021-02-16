@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
 
-echo "Building Nix expression for Emacs.."
-
-args=(
+derivation_args=(
+)
+build_args=(
     --cores 0
     -j8
     --no-build-output
     --no-out-link
 )
-drv=$(nix-build ${args[*]} ./emacs.nix)
+
+while test $# -ge 1
+do case "$1" in
+       --use-host-nixpkgs )
+           echo "Using host Nixpkgs (CLI).."
+           derivation_args+=(--arg use-host-nixpkgs true);;
+       * ) break;; esac; shift; done
+
+
+echo "Building Nix expression for Emacs.."
+
+drv=$(nix-build ${build_args[*]} ./emacs.nix "${derivation_args[@]}")
 
 if test -n "$drv"
 then echo "Got:  $drv"
