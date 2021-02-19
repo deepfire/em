@@ -90,7 +90,7 @@
     :config
   (bind-key "M-p"                          'flycheck-previous-error)
   (bind-key "M-n"                          'flycheck-next-error)
-  (bind-key "M-."                          'xref-find-definitions)
+  (bind-key "M-."                          'xref-find-definitions 'haskell-mode-map)
 
   (push (cons "\\.hs-boot\\'" 'haskell-mode) auto-mode-alist)
 
@@ -101,7 +101,6 @@
     (dante-mode +1)
     (company-mode +1)
     (flycheck-mode +1)
-    (interactive-haskell-mode +1)
 
     ;; Paredit is last, because unbalanced parens in comments break it.
     (paredit-mode +1)
