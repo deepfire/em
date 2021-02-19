@@ -90,6 +90,7 @@
     :config
   (bind-key "M-p"                          'flycheck-previous-error)
   (bind-key "M-n"                          'flycheck-next-error)
+  (bind-key "M-."                          'xref-find-definitions)
 
   (push (cons "\\.hs-boot\\'" 'haskell-mode) auto-mode-alist)
 
