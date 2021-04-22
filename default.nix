@@ -83,7 +83,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2021.0423.1";
+  version = "2021.0423.2";
   name = "em-${version}";
 
   src = ./.;

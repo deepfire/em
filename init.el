@@ -500,7 +500,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :background "#002b36" :foreground "#839496" :weight normal :height 130 :width normal))))
+ '(default ((t (:inherit nil :background "#002b36" :foreground "#839496" :weight normal :height 140 :width normal))))
  '(haskell-debug-warning-face ((t (:inherit 'compilation-warning))))
  '(haskell-interactive-face-compile-warning ((t (:inherit nil :foreground "#855900"))))
  '(helm-candidate-number ((t (:background "#073642" :foreground "#6c71c4"))))
