@@ -19,7 +19,7 @@ do case "$1" in
 
 echo "Building Nix expression for Emacs.."
 
-drv=$(nix-build ${build_args[*]} ./emacs.nix "${derivation_args[@]}")
+drv=$(nix-build ${build_args[*]} ./default.nix "${derivation_args[@]}")
 
 if test -n "$drv"
 then echo "Got:  $drv"

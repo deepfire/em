@@ -6,7 +6,7 @@ without interfering with the host distribution.
 
 To build the project, type the following from the current directory:
 
-$ nix-build emacs.nix
+$ nix-build
 
 */
 
@@ -83,7 +83,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2021.0220.1";
+  version = "2021.0423.1";
   name = "em-${version}";
 
   src = ./.;
