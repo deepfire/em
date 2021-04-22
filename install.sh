@@ -13,7 +13,7 @@ while test $# -ge 1
 do case "$1" in
        --use-host-nixpkgs )
            echo "Using host Nixpkgs (CLI).."
-           derivation_args+=(--arg use-host-nixpkgs true);;
+           derivation_args+=(--arg useHostNixpkgs true);;
        * ) break;; esac; shift; done
 
 

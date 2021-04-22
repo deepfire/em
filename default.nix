@@ -10,14 +10,14 @@ $ nix-build
 
 */
 
-{ use-host-nixpkgs ? false
+{ useHostNixpkgs ? false
+, sources        ? import ./nix/sources.nix { inherit pkgs; }
+, nixpkgsSrcs    ? if !useHostNixpkgs then sources.nixpkgs     else <nixpkgs>
+, nixpkgsRev     ? if !useHostNixpkgs then sources.nixpkgs.rev else "HOST"
+, pkgs           ? import nixpkgsSrcs {}
 }:
 
 let
-  sources     = import ./nix/sources.nix { inherit pkgs; };
-  nixpkgs     = if !use-host-nixpkgs then sources.nixpkgs     else <nixpkgs>;
-  nixpkgs-rev = if !use-host-nixpkgs then sources.nixpkgs.rev else "HOST";
-  pkgs        = import nixpkgs {};
   fromGithub  = old: owner: repo: rev: sha256:
     (old.override (args:
       { melpaBuild = drv: args.melpaBuild (drv // {
@@ -102,12 +102,12 @@ stdenv.mkDerivation rec {
     mkdir -p $out/bin
 
     makeWrapper ${emacs}/bin/emacs $out/bin/em \
-      --run "echo '${name}: nixpkgs commit ${nixpkgs-rev}'" \
+      --run "echo '${name}: nixpkgs commit ${nixpkgsRev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
       --add-flags "${toString extra-emacs-args}"
 
     cat >$out/bin/emn <<EOF
-    echo '${name}: nixpkgs commit ${nixpkgs-rev}'
+    echo '${name}: nixpkgs commit ${nixpkgsRev}'
     echo '${name}: loading bundled init.el: ${bundled-emacs-init}'
     nohup $out/bin/em "\$@" </dev/null 2>/dev/null &
     sleep 0.1
