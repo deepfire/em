@@ -80,7 +80,18 @@
         flycheck-highlighting-mode
         'sexps
         flycheck-hlint-language-extensions
-        '("BlockArguments" "GADTs" "LambdaCase" "MultiWayIf" "NumericUnderscores" "PatternSynonyms" "RankNTypes" "RecursiveDo" "TypeFamilies" "TypeApplications")))
+        '(
+          "BlockArguments"
+          "GADTs"
+          "LambdaCase"
+          "MultiWayIf"
+          "NumericUnderscores"
+          "PatternSynonyms"
+          "RankNTypes"
+          "RecursiveDo"
+          "TypeApplications"
+          "TypeFamilies"
+          )))
 
 (use-package git-gutter-fringe
     :config
@@ -322,6 +333,10 @@
   (add-hook 'org-shiftleft-final-hook               'windmove-left)
   (add-hook 'org-shiftdown-final-hook               'windmove-down)
   (add-hook 'org-shiftright-final-hook              'windmove-right)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t)))
 
   (setq org-blank-before-new-entry
         '((heading . auto) (plain-list-item))

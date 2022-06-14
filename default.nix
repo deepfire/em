@@ -23,9 +23,10 @@ let
       { melpaBuild = drv: args.melpaBuild (drv // {
           src = pkgs.fetchFromGitHub { inherit owner repo rev sha256; }; });}));
 
-  mkEmacsWithPackages = (pkgs.emacsPackagesNgGen pkgs.emacs).emacsWithPackages;
+  mkEmacsWithPackages = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages;
 
-  emacs = mkEmacsWithPackages (epkgs: (with epkgs.melpaPackages; [
+  emacs = mkEmacsWithPackages (epkgs: (with epkgs.elpaPackages; [
+  ]) ++ (with epkgs.melpaPackages; [
     ag
     all-the-icons
     boxquote
@@ -37,6 +38,7 @@ let
     form-feed
     git-auto-commit-mode
     git-gutter-fringe
+    gnuplot
     haskell-mode
     hasklig-mode
     helm
@@ -65,8 +67,8 @@ let
     sudo-edit
     use-package
     which-key
-  ]) ++ (with epkgs.orgPackages; [
-      org-plus-contrib
+  ]) ++ (with epkgs.nongnuPackages; [
+    org-contrib
   ]));
 
   bundled-emacs-init = ./init.el;
@@ -83,7 +85,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2021.0423.2";
+  version = "2022.0614.0";
   name = "em-${version}";
 
   src = ./.;
@@ -95,6 +97,7 @@ stdenv.mkDerivation rec {
     aurulent-sans
     terminus_font
     terminus_font_ttf
+    gnuplot
   ];
 
   installPhase =
@@ -104,7 +107,8 @@ stdenv.mkDerivation rec {
     makeWrapper ${emacs}/bin/emacs $out/bin/em \
       --run "echo '${name}: nixpkgs commit ${nixpkgsRev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
-      --add-flags "${toString extra-emacs-args}"
+      --add-flags "${toString extra-emacs-args}" \
+      --prefix PATH : ${lib.makeBinPath [ gnuplot ]}
 
     cat >$out/bin/emn <<EOF
     echo '${name}: nixpkgs commit ${nixpkgsRev}'
