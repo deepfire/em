@@ -15,6 +15,7 @@ $ nix-build
 , nixpkgsSrcs    ? if !useHostNixpkgs then sources.nixpkgs     else <nixpkgs>
 , nixpkgsRev     ? if !useHostNixpkgs then sources.nixpkgs.rev else "HOST"
 , pkgs           ? import nixpkgsSrcs {}
+, font           ? "TerminessTTF Nerd Font"
 }:
 
 let
@@ -76,7 +77,7 @@ let
   extra-emacs-args =
     [ "--no-init-file"
       "--load=${bundled-emacs-init}"
-      "-fn" "Terminus"
+      "-fn" "'${font}'"
       "-bg" "'#002b36'"
       "-fg" "'#839496'"
     ];
@@ -85,7 +86,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2022.0624.0";
+  version = "2022.0707.0";
   name = "em-${version}";
 
   src = ./.;
@@ -96,6 +97,7 @@ stdenv.mkDerivation rec {
     ## Fonts:
     aurulent-sans
     terminus_font
+    nerdfonts
     terminus_font_ttf
     gnuplot
   ];
