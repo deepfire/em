@@ -86,7 +86,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2022.0707.0";
+  version = "2022.0722.0";
   name = "em-${version}";
 
   src = ./.;
@@ -110,7 +110,10 @@ stdenv.mkDerivation rec {
       --run "echo '${name}: nixpkgs commit ${nixpkgsRev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
       --add-flags "${toString extra-emacs-args}" \
-      --prefix PATH : ${lib.makeBinPath [ gnuplot ]}
+      --prefix PATH : ${lib.makeBinPath
+        [ gnuplot
+          texlive.combined.scheme-full
+        ]}
 
     cat >$out/bin/emn <<EOF
     echo '${name}: nixpkgs commit ${nixpkgsRev}'
