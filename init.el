@@ -313,7 +313,7 @@
         neo-theme
         'ascii
         neo-window-width
-        20)
+        25)
 
   (neotree-toggle))
 
