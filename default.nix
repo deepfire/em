@@ -9,6 +9,8 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
+let version = "2022.1109.0";
+in
 
 { useHostNixpkgs ? false
 , sources        ? import ./nix/sources.nix { inherit pkgs; }
@@ -86,7 +88,7 @@ in
 with pkgs;
 
 stdenv.mkDerivation rec {
-  version = "2022.0823.0";
+  inherit version;
   name = "em-${version}";
 
   src = ./.;

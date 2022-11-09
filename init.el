@@ -266,6 +266,7 @@
     :config
   (bind-key "C-<prior>"     (lambda () (interactive) (neotree-tab-move nil)))
   (bind-key "C-<next>"      (lambda () (interactive) (neotree-tab-move t)))
+  (bind-key "C-<f1>"        'neotree-toggle)
 
   (defun neotree-select ()
     (interactive)
