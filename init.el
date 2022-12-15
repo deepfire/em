@@ -208,6 +208,10 @@
   (setq ibuffer-default-sorting-mode
         'recency))
 
+(use-package jq-mode
+    :config
+  (push '("\\.jq$" . jq-mode) auto-mode-alist))
+
 (use-package magit
     :config
   (bind-key "<menu>"        'magit-status)
