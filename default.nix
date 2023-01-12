@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2022.1215.0";
+let version = "2023.01.12.0";
 in
 
 { useHostNixpkgs ? false

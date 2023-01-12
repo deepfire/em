@@ -214,6 +214,7 @@
 
 (use-package magit
     :config
+  (bind-key "<f5>"          'magit-run-gitk-all 'magit-mode-map)
   (bind-key "<menu>"        'magit-status)
   (bind-key "<print>"       'magit-status)
   (bind-key "C-x C-c"       'magit-commit)
