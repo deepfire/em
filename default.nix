@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2023.01.12.0";
+let version = "2023.02.03.0";
 in
 
 { useHostNixpkgs ? false
@@ -83,6 +83,15 @@ let
       "-bg" "'#002b36'"
       "-fg" "'#839496'"
     ];
+
+  FONTCONFIG_FILE = with pkgs; makeFontsConf {
+    fontDirectories = [
+      aurulent-sans
+      terminus_font
+      terminus_font_ttf
+      terminus-nerdfont
+    ];
+  };
 in
 
 with pkgs;
@@ -95,14 +104,10 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [
     makeWrapper
-
-    ## Fonts:
-    aurulent-sans
-    terminus_font
-    nerdfonts
-    terminus_font_ttf
     gnuplot
   ];
+
+  inherit FONTCONFIG_FILE;
 
   installPhase =
   ''
@@ -112,6 +117,7 @@ stdenv.mkDerivation rec {
       --run "echo '${name}: nixpkgs commit ${nixpkgsRev}'" \
       --run "echo '${name}: loading bundled init.el: ${bundled-emacs-init}'" \
       --add-flags "${toString extra-emacs-args}" \
+      --set FONTCONFIG_FILE ${FONTCONFIG_FILE} \
       --prefix PATH : ${lib.makeBinPath
         [ gnuplot
           texlive.combined.scheme-full
@@ -120,6 +126,7 @@ stdenv.mkDerivation rec {
     cat >$out/bin/emn <<EOF
     echo '${name}: nixpkgs commit ${nixpkgsRev}'
     echo '${name}: loading bundled init.el: ${bundled-emacs-init}'
+    echo '${name}: FONTCONFIG_FILE=${FONTCONFIG_FILE}'
     nohup $out/bin/em "\$@" </dev/null 2>/dev/null &
     sleep 0.1
     rm -f nohup.out
