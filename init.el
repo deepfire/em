@@ -577,6 +577,7 @@ list of the fields in the rectangle."
  '(split-width-threshold 140)
  '(tool-bar-mode nil nil (tool-bar))
  '(tooltip-hide-delay 600)
+ '(transient-save-history nil)
  '(undo-limit 1048576)
  '(undo-outer-limit 120000000)
  '(warning-suppress-types '((\(undo\ discard-info\))))
