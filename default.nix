@@ -13,10 +13,11 @@ let version = "2023.02.15.0";
 in
 
 { useHostNixpkgs ? false
-, sources        ? import ./nix/sources.nix { inherit pkgs; }
+, system         ? builtins.currentSystem
+, sources        ? import ./nix/sources.nix { inherit pkgs system; }
 , nixpkgsSrcs    ? if !useHostNixpkgs then sources.nixpkgs     else <nixpkgs>
 , nixpkgsRev     ? if !useHostNixpkgs then sources.nixpkgs.rev else "HOST"
-, pkgs           ? import nixpkgsSrcs {}
+, pkgs           ? import nixpkgsSrcs { inherit system; }
 , font           ? "TerminessTTF Nerd Font"
 }:
 
