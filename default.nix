@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2023.04.19.0";
+let version = "2023.04.19.1";
 in
 
 { useHostNixpkgs ? false
@@ -121,7 +121,23 @@ stdenv.mkDerivation rec {
       --set FONTCONFIG_FILE ${FONTCONFIG_FILE} \
       --prefix PATH : ${lib.makeBinPath
         [ gnuplot
-          texlive.combined.scheme-full
+          (texlive.combine {
+            inherit (texlive)
+              scheme-small
+              amsmath
+              # amssymb
+              capt-of
+              geometry
+              # graphicx
+              hyperref
+              # longtable
+              # normalem
+              # rotating
+              setspace
+              wrapfig
+            ;
+          })
+          # texlive.combined.scheme-full
         ]}
 
     cat >$out/bin/emn <<EOF
