@@ -344,6 +344,7 @@
   (bind-key "C-c C-x C-x"   (lambda ()
                               (interactive)
                               (org-table-recalculate-buffer-tables)
+                              (org-table-recalculate-buffer-tables)
                               (org-babel-execute-buffer)
                               (org-redisplay-inline-images))
                                                     org-mode-map)
