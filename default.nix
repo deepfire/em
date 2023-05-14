@@ -47,8 +47,8 @@ let
     hasklig-mode
     helm
     helm-ag
-    helm-ag-r
-    helm-cmd-t
+    # helm-ag-r
+    # helm-cmd-t
     helm-descbinds
     helm-grepint
     helm-helm-commands
