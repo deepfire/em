@@ -195,8 +195,6 @@
   (setq helm-ls-git-show-abs-or-relative
         'relative))
 
-(use-package helm-config)
-
 (use-package helm-descbinds)
 
 (use-package helm-helm-commands)

@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2023.04.19.1";
+let version = "2023.05.17.1";
 in
 
 { useHostNixpkgs ? false
@@ -18,7 +18,7 @@ in
 , nixpkgsSrcs    ? if !useHostNixpkgs then sources.nixpkgs     else <nixpkgs>
 , nixpkgsRev     ? if !useHostNixpkgs then sources.nixpkgs.rev else "HOST"
 , pkgs           ? import nixpkgsSrcs { inherit system; }
-, font           ? "TerminessTTF Nerd Font"
+, font           ? "Terminus (TTF)"
 }:
 
 let
