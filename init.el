@@ -617,6 +617,7 @@ list of the fields in the rectangle."
 ;;
 ; A-la vim's 'J' command:
 (bind-key "C-<up>"        'join-line)
+(bind-key "<f6>"          'eval-defun)
 
 ; Scrolling
 (defun scroll:helper   (x) (next-line x) (scroll-up x))
