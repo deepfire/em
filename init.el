@@ -396,56 +396,68 @@
   :config
 
   (message "Overriding org-id :: org-id-find")
-  (defun org-id-find (id &optional markerp)
-    "Return the location of the entry with the id ID.
+(defun org-id-parse-remote-table-ref (refstr)
+  (save-match-data
+    (when-let* ((match (string-match "^file:\\([^:]+\\)\\(\\|:.+\\)$" refstr))
+                (m1 (match-string 1 refstr))
+                (m2 (match-string 2 refstr))
+                (filename (cl-remove-if (lambda (c) (member c '(40 41)))
+                                        (org-table-formula-substitute-names m1)))
+                (table-name (org-table-formula-substitute-names m2)))
+      (list filename table-name))))
+
+(defun org-id-find-remote (file table-id markerp)
+  (if (file-exists-p file)
+      (let ((buffer (let ((query-about-changed-file nil))
+                      (find-file-noselect file))))
+        (unwind-protect
+	    (with-current-buffer buffer
+              (goto-char (point-min))
+	      (let ((pos (progn
+                           (unless (string= table-id "")
+                             (let* ((ident (cl-subseq table-id 1))
+                                    (id-match (search-forward (concat "#+NAME: " ident) nil t)))
+                               (unless id-match
+                                 (error "org-id-find-remote: file \"%s\" has no table with NAME \"%s\"." file ident))
+                               (forward-line)))
+                           (re-search-forward "^|-")
+                           (move-beginning-of-line nil))))
+                (cond
+	         ((null pos) nil)
+	         (markerp (move-marker (make-marker) pos buffer))
+	         (t (cons file pos)))))
+	  ;; Remove opened buffer in the process.
+	  (unless markerp (kill-buffer buffer))))
+    (error "org-id-find-remote:  reference to missing file %s" file)))
+
+;;;###autoload
+(defun org-id-find (id &optional markerp)
+  "Return the location of the entry with the id ID.
 The return value is a cons cell (file-name . position), or nil
 if there is no entry with that ID.
 With optional argument MARKERP, return the position as a new marker."
-    (cond
-     ((symbolp id) (setq id (symbol-name id)))
-     ((numberp id) (setq id (number-to-string id))))
-    (let ((remote-match (string-match "^file:\\([^:]+\\)\\(\\|:.+\\)$" id)))
-      (if remote-match
-          (let* ((file-raw2 (match-string 1 id))
-                 (table-id (match-string 2 id))
-                 (file-raw (org-table-formula-substitute-names file-raw2))
-                 (file (remove-if (lambda (c) (member c '(40 41))) file-raw)))
-            (if (file-exists-p file)
-                (let ((buffer (let ((query-about-changed-file nil))
-                                (find-file-noselect file))))
-                  (unwind-protect
-	              (with-current-buffer buffer
-                        (beginning-of-buffer)
-	                (let ((pos (progn
-                                     (unless (string= table-id "")
-                                       (let* ((ident (subseq table-id 1))
-                                              (id-match (search-forward (concat "#+NAME: " ident) nil t)))
-                                         (unless id-match
-                                           (error "File \"%s\" has no table with NAME \"%s\"." file ident))
-                                         (next-line)))
-                                     (re-search-forward "^|-")
-                                     (move-beginning-of-line nil))))
-                          (cond
-	                   ((null pos) nil)
-	                   (markerp (move-marker (make-marker) pos buffer))
-	                   (t (cons file pos)))))
-	            ;; Remove opened buffer in the process.
-	            (unless markerp (kill-buffer buffer))))
-              (error "org-id-find:  reference to missing file %s" file)))
-        (let ((file (org-id-find-id-file id))
-	      org-agenda-new-buffers where)
+  (cond
+   ((symbolp id) (setq id (symbol-name id)))
+   ((numberp id) (setq id (number-to-string id))))
+  (let ((remote-match (org-id-parse-remote-table-ref id)))
+    (if remote-match
+        (org-id-find-remote (car remote-match) (cadr remote-match) markerp)
+      (let ((file (org-id-find-id-file id))
+	    org-agenda-new-buffers where)
+        (when file
+          (setq where (org-id-find-id-in-file id file markerp)))
+        (unless where
+          (org-id-update-id-locations nil t)
+          (setq file (org-id-find-id-file id))
           (when file
-            (setq where (org-id-find-id-in-file id file markerp)))
-          (unless where
-            (org-id-update-id-locations nil t)
-            (setq file (org-id-find-id-file id))
-            (when file
-	      (setq where (org-id-find-id-in-file id file markerp))))
-          where)))))
+	    (setq where (org-id-find-id-in-file id file markerp))))
+        where))))
+)
 
 (use-package org-table
   :config
   (message "Overriding org-table :: org-table-get-remote-range")
+
   (defun org-table-get-remote-range (name-or-id form)
     "Get a field value or a list of values in a range from table at ID.
 
