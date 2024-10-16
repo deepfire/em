@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2024.09.23.0";
+let version = "2024.10.16.0";
 in
 
 { useHostNixpkgs ? false
@@ -33,6 +33,7 @@ let
   ]) ++ (with epkgs.melpaPackages; [
     ag
     all-the-icons
+    attrap
     boxquote
     color-theme-modern
     dante

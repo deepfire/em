@@ -34,8 +34,12 @@
     :config
   (bind-key "<s-tab>"       'company-complete))
 
+(use-package attrap
+  :bind (("C-x /" . attrap-attrap)))
+
 (use-package dante
-    :config
+  :after haskell-mode
+  :config
   (bind-key "<f4>"              'dante-set-lib)
   (bind-key "<f5>"              'dante-restart           dante-mode-map)
 
@@ -109,19 +113,19 @@
 
   (push (cons "\\.hs-boot\\'" 'haskell-mode) auto-mode-alist)
 
-  (defun haskell-hook ()
-    (message "******* 'haskell-hook' started")
-    (form-feed-mode +1)
-    (setf haskell-process-type 'cabal-repl)
-    (dante-mode +1)
-    (company-mode +1)
-    (flycheck-mode +1)
+  (add-hook 'haskell-mode-hook
+            (defun haskell-hook ()
+              (message "******* 'haskell-hook' started")
+              (form-feed-mode +1)
+              (setf haskell-process-type 'cabal-repl)
+              (dante-mode +1)
+              (company-mode +1)
+              (flycheck-mode +1)
 
-    ;; Paredit is last, because unbalanced parens in comments break it.
-    (paredit-mode +1)
-    (message "....... 'haskell-hook' done"))
-
-  (add-hook 'haskell-mode-hook             'haskell-hook)
+              ;; Paredit is last, because unbalanced parens in comments break it.
+              (paredit-mode +1)
+              (setq eldoc-documentation-strategy #'eldoc-documentation-default)
+              (message "....... 'haskell-hook' done")))
 
   (setq haskell-hoogle-url
         "http://127.0.0.1:8080/?hoogle=%s"
