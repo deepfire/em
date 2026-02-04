@@ -9,7 +9,7 @@ To build the project, type the following from the current directory:
 $ nix-build
 
 */
-let version = "2024.10.16.0";
+let version = "2026.02.05.0";
 in
 
 { useHostNixpkgs ? false
@@ -30,6 +30,9 @@ let
   mkEmacsWithPackages = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages;
 
   emacs = mkEmacsWithPackages (epkgs: (with epkgs.elpaPackages; [
+    # helm-ag # gone in 25.11
+    # helm-helm-commands # gone in 25.11
+    # use-package # gone in 25.11
   ]) ++ (with epkgs.melpaPackages; [
     ag
     all-the-icons
@@ -45,14 +48,12 @@ let
     git-gutter-fringe
     gnuplot
     haskell-mode
-    hasklig-mode
+    # hasklig-mode # gone in 25.11
     helm
-    helm-ag
     # helm-ag-r
     # helm-cmd-t
     helm-descbinds
     helm-grepint
-    helm-helm-commands
     helm-hoogle
     helm-ls-git
     htmlize
@@ -70,7 +71,6 @@ let
     solarized-theme
     strace-mode
     sudo-edit
-    use-package
     which-key
   ]) ++ (with epkgs.nongnuPackages; [
     org-contrib
@@ -91,7 +91,7 @@ let
       aurulent-sans
       terminus_font
       terminus_font_ttf
-      terminus-nerdfont
+      nerd-fonts.terminess-ttf
     ];
   };
 in
