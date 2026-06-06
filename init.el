@@ -1,5 +1,7 @@
 (require 'package)
 
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
 (package-initialize)
 
 (require 'use-package)
@@ -38,10 +40,28 @@
   :bind (("C-x /" . attrap-attrap)))
 
 (use-package dante
+  :ensure t ; ask use-package to install the package
   :after haskell-mode
+  :commands 'dante-mode
+  :init
+  ;; flycheck backend deprecated October 2022
+  ;; (add-hook 'haskell-mode-hook 'flycheck-mode)
+
+  (add-hook 'haskell-mode-hook 'flymake-mode)
+  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  (add-hook 'haskell-mode-hook
+            (defun my-fix-hs-eldoc ()
+              (setq eldoc-documentation-strategy #'eldoc-documentation-default)))
   :config
   (bind-key "<f4>"              'dante-set-lib)
   (bind-key "<f5>"              'dante-restart           dante-mode-map)
+  (require 'flymake-flycheck)
+  (defalias 'flymake-hlint
+    (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
+  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint)
+  ;; flycheck backend deprecated October 2022
+  ;; (flycheck-add-next-checker 'haskell-dante '(info . haskell-hlint))
 
   (defun dante-set-full (x)
     (interactive "Mcabal target: ")
@@ -64,10 +84,10 @@
         (quote
          ((new-build "cabal.project"
                      ("cabal" "repl" "-O0" "-j"
-                              (or dante-target
-                                  (dante-package-name)
-                                  nil)
-                              "--builddir=dist-newstyle/dante"))))))
+                      (or dante-target
+                          (dante-package-name)
+                          nil)
+                      "--builddir=dist-newstyle/dante"))))))
 
 (use-package dired
     :config
@@ -77,10 +97,10 @@
         "^\\.\\.?$\\|^#|hi$|dyn_hi$"))
 
 (use-package flycheck
-    :config
-  (flycheck-add-next-checker 'haskell-dante 'haskell-hlint)
+  :after dante
+  :config
   (setq flycheck-checkers
-        '(haskell-dante haskell-hlint)
+        '(haskell-hlint)
         flycheck-highlighting-mode
         'sexps
         flycheck-hlint-language-extensions
@@ -174,7 +194,7 @@
 
 (use-package helm-grepint
     :config
-  (bind-key "M-s"           'helm-grepint-grep-root)
+  (bind-key "M-s"           'helm-do-grep-ag-project)
 
   (helm-grepint-set-default-config)
 
@@ -201,7 +221,7 @@
 
 (use-package helm-descbinds)
 
-(use-package helm-helm-commands)
+;; (use-package helm-helm-commands)
 
 (use-package ibuffer
     :config
@@ -219,6 +239,7 @@
   (bind-key "<f5>"          'magit-run-gitk-all 'magit-mode-map)
   (bind-key "<menu>"        'magit-status)
   (bind-key "<print>"       'magit-status)
+  (bind-key "C-/"           'magit-status)
   (bind-key "C-x C-c"       'magit-commit)
 
   (setq git-commit-fill-column
@@ -595,6 +616,7 @@ list of the fields in the rectangle."
  '(inhibit-startup-echo-area-meassage t)
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
+ '(neo-window-width 28)
  '(safe-local-variable-values
    '((dante-repl-command-line "cabal" "v2-repl" "-O0" "-j" "common")))
  '(savehist-mode t nil (savehist))
